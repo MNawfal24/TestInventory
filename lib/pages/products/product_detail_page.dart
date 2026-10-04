@@ -25,6 +25,23 @@ class ProductDetailPage extends StatelessWidget {
       builder: (context, _) {
         final product = store.getProductById(productId);
 
+        final bool isOutOfStock = product.stock == 0;
+        final bool isLowStock = !isOutOfStock && product.isLowStock;
+
+        String stockLabel;
+        Color stockColor;
+
+        if (isOutOfStock) {
+          stockLabel = 'Out of Stock (Kosong)';
+          stockColor = Colors.grey.shade700;
+        } else if (isLowStock) {
+          stockLabel = 'Low Stock';
+          stockColor = AppTheme.danger;
+        } else {
+          stockLabel = 'Stock Available';
+          stockColor = AppTheme.secondary;
+        }
+
         return Scaffold(
           appBar: AppBar(
             title: const Text('Product Detail'),
@@ -62,15 +79,13 @@ class ProductDetailPage extends StatelessWidget {
                         width: 85,
                         height: 85,
                         decoration: BoxDecoration(
-                          color: AppTheme.primary
-                              .withValues(alpha: 0.08),
-                          borderRadius:
-                              BorderRadius.circular(20),
+                          color: stockColor.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Icon(
-                          Icons.inventory_2_outlined,
+                        child: Icon(
+                          isOutOfStock ? Icons.remove_shopping_cart_outlined : Icons.inventory_2_outlined,
                           size: 42,
-                          color: AppTheme.primary,
+                          color: stockColor,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -95,20 +110,13 @@ class ProductDetailPage extends StatelessWidget {
                           vertical: 7,
                         ),
                         decoration: BoxDecoration(
-                          color: (product.isLowStock
-                                  ? AppTheme.danger
-                                  : AppTheme.secondary)
-                              .withValues(alpha: 0.1),
+                          color: stockColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Text(
-                          product.isLowStock
-                              ? 'Low Stock'
-                              : 'Stock Available',
+                          stockLabel,
                           style: TextStyle(
-                            color: product.isLowStock
-                                ? AppTheme.danger
-                                : AppTheme.secondary,
+                            color: stockColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -124,8 +132,7 @@ class ProductDetailPage extends StatelessWidget {
                     Expanded(
                       child: _InfoCard(
                         title: 'Current Stock',
-                        value:
-                            '${product.stock} ${product.unit}',
+                        value: '${product.stock} ${product.unit}',
                         icon: Icons.inventory_2_outlined,
                       ),
                     ),
@@ -133,8 +140,7 @@ class ProductDetailPage extends StatelessWidget {
                     Expanded(
                       child: _InfoCard(
                         title: 'Minimum Stock',
-                        value:
-                            '${product.minStock} ${product.unit}',
+                        value: '${product.minStock} ${product.unit}',
                         icon: Icons.warning_amber_outlined,
                       ),
                     ),
@@ -151,8 +157,7 @@ class ProductDetailPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'Price Information',
@@ -261,8 +266,7 @@ class _PriceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,

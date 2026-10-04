@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/mock_data.dart';
 import '../../models/product_model.dart';
+import '../../widgets/app_theme.dart';
 
 class ProductFormPage extends StatefulWidget {
   final InventoryStore store;
@@ -14,12 +15,10 @@ class ProductFormPage extends StatefulWidget {
   });
 
   @override
-  State<ProductFormPage> createState() =>
-      _ProductFormPageState();
+  State<ProductFormPage> createState() => _ProductFormPageState();
 }
 
-class _ProductFormPageState
-    extends State<ProductFormPage> {
+class _ProductFormPageState extends State<ProductFormPage> {
   final formKey = GlobalKey<FormState>();
 
   late TextEditingController nameController;
@@ -39,8 +38,7 @@ class _ProductFormPageState
 
     final product = widget.product;
 
-    nameController =
-        TextEditingController(text: product?.name ?? '');
+    nameController = TextEditingController(text: product?.name ?? '');
     stockController = TextEditingController(
       text: product?.stock.toString() ?? '',
     );
@@ -48,10 +46,10 @@ class _ProductFormPageState
       text: product?.minStock.toString() ?? '',
     );
     buyPriceController = TextEditingController(
-      text: product?.buyPrice.toStringAsFixed(0) ?? '',
+      text: product?.buyPrice != null ? product!.buyPrice.toStringAsFixed(0) : '',
     );
     sellPriceController = TextEditingController(
-      text: product?.sellPrice.toStringAsFixed(0) ?? '',
+      text: product?.sellPrice != null ? product!.sellPrice.toStringAsFixed(0) : '',
     );
 
     category = product?.category ?? 'Coffee';
@@ -74,15 +72,14 @@ class _ProductFormPageState
     }
 
     final product = Product(
-      id: widget.product?.id ??
-          'P${DateTime.now().millisecondsSinceEpoch}',
+      id: widget.product?.id ?? 'P${DateTime.now().millisecondsSinceEpoch}',
       name: nameController.text.trim(),
       category: category,
-      stock: int.parse(stockController.text),
-      minStock: int.parse(minStockController.text),
+      stock: int.parse(stockController.text.trim()),
+      minStock: int.parse(minStockController.text.trim()),
       unit: unit,
-      buyPrice: double.parse(buyPriceController.text),
-      sellPrice: double.parse(sellPriceController.text),
+      buyPrice: double.parse(buyPriceController.text.trim()),
+      sellPrice: double.parse(sellPriceController.text.trim()),
     );
 
     if (isEdit) {
@@ -96,9 +93,7 @@ class _ProductFormPageState
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          isEdit
-              ? 'Product updated successfully'
-              : 'Product added successfully',
+          isEdit ? 'Product updated successfully' : 'Product added successfully',
         ),
       ),
     );
@@ -108,40 +103,58 @@ class _ProductFormPageState
     if (value == null || value.trim().isEmpty) {
       return 'Field is required';
     }
-
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           isEdit ? 'Edit Product' : 'Add Product',
+          style: TextStyle(fontFamily: textFamily, fontWeight: FontWeight.bold),
         ),
       ),
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
                 controller: nameController,
                 validator: requiredValidator,
-                decoration: const InputDecoration(
+                style: TextStyle(fontFamily: textFamily),
+                decoration: InputDecoration(
                   labelText: 'Product Name',
-                  prefixIcon:
-                      Icon(Icons.inventory_2_outlined),
+                  labelStyle: TextStyle(fontFamily: textFamily, color: AppTheme.textSecondary),
+                  prefixIcon: const Icon(Icons.inventory_2_outlined, color: AppTheme.primary),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
 
               DropdownButtonFormField<String>(
                 value: category,
-                decoration: const InputDecoration(
+                style: TextStyle(fontFamily: textFamily, color: AppTheme.textPrimary),
+                decoration: InputDecoration(
                   labelText: 'Category',
+                  labelStyle: TextStyle(fontFamily: textFamily, color: AppTheme.textSecondary),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 items: const [
                   'Coffee',
@@ -149,14 +162,12 @@ class _ProductFormPageState
                   'Sweetener',
                   'Ingredient',
                   'Other',
-                ].map(
-                  (item) {
-                    return DropdownMenuItem(
-                      value: item,
-                      child: Text(item),
-                    );
-                  },
-                ).toList(),
+                ].map((item) {
+                  return DropdownMenuItem(
+                    value: item,
+                    child: Text(item, style: TextStyle(fontFamily: textFamily)),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   if (value != null) {
                     setState(() {
@@ -166,7 +177,7 @@ class _ProductFormPageState
                 },
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
 
               Row(
                 children: [
@@ -174,10 +185,17 @@ class _ProductFormPageState
                     child: TextFormField(
                       controller: stockController,
                       validator: requiredValidator,
-                      keyboardType:
-                          TextInputType.number,
-                      decoration: const InputDecoration(
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontFamily: textFamily),
+                      decoration: InputDecoration(
                         labelText: 'Current Stock',
+                        labelStyle: TextStyle(fontFamily: textFamily, color: AppTheme.textSecondary),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
@@ -186,22 +204,37 @@ class _ProductFormPageState
                     child: TextFormField(
                       controller: minStockController,
                       validator: requiredValidator,
-                      keyboardType:
-                          TextInputType.number,
-                      decoration: const InputDecoration(
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontFamily: textFamily),
+                      decoration: InputDecoration(
                         labelText: 'Minimum Stock',
+                        labelStyle: TextStyle(fontFamily: textFamily, color: AppTheme.textSecondary),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
 
               DropdownButtonFormField<String>(
                 value: unit,
-                decoration: const InputDecoration(
+                style: TextStyle(fontFamily: textFamily, color: AppTheme.textPrimary),
+                decoration: InputDecoration(
                   labelText: 'Unit',
+                  labelStyle: TextStyle(fontFamily: textFamily, color: AppTheme.textSecondary),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 items: const [
                   'Kg',
@@ -209,14 +242,12 @@ class _ProductFormPageState
                   'Pcs',
                   'Pack',
                   'Box',
-                ].map(
-                  (item) {
-                    return DropdownMenuItem(
-                      value: item,
-                      child: Text(item),
-                    );
-                  },
-                ).toList(),
+                ].map((item) {
+                  return DropdownMenuItem(
+                    value: item,
+                    child: Text(item, style: TextStyle(fontFamily: textFamily)),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   if (value != null) {
                     setState(() {
@@ -226,47 +257,66 @@ class _ProductFormPageState
                 },
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
 
               TextFormField(
                 controller: buyPriceController,
                 validator: requiredValidator,
-                keyboardType:
-                    const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                style: TextStyle(fontFamily: textFamily),
+                decoration: InputDecoration(
                   labelText: 'Purchase Price',
+                  labelStyle: TextStyle(fontFamily: textFamily, color: AppTheme.textSecondary),
                   prefixText: 'Rp ',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
 
               TextFormField(
                 controller: sellPriceController,
                 validator: requiredValidator,
-                keyboardType:
-                    const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                style: TextStyle(fontFamily: textFamily),
+                decoration: InputDecoration(
                   labelText: 'Selling Price',
+                  labelStyle: TextStyle(fontFamily: textFamily, color: AppTheme.textSecondary),
                   prefixText: 'Rp ',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 30),
 
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppTheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
                   onPressed: saveProduct,
                   child: Text(
-                    isEdit
-                        ? 'Save Changes'
-                        : 'Add Product',
+                    isEdit ? 'Save Changes' : 'Add Product',
+                    style: TextStyle(
+                      fontFamily: textFamily,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

@@ -40,9 +40,17 @@ class _ProductsPageState extends State<ProductsPage> {
 
         final filteredProducts = widget.store.products.where((product) {
           final matchesSearch = product.name.toLowerCase().contains(search);
-          final matchesFilter =
-              selectedFilter == 'All' ||
-              (selectedFilter == 'Low Stock' && product.isLowStock);
+          
+          bool matchesFilter = true;
+          if (selectedFilter == 'Low Stock') {
+            matchesFilter = product.isLowStock;
+          } else if (selectedFilter == 'Safe Stock') {
+            // Sesuaikan kondisi safe stock jika ada propertinya, contoh: stock di atas batas minimum
+            matchesFilter = !product.isLowStock && product.stock > 0;
+          } else if (selectedFilter == 'Sold Stock') {
+            // Sesuaikan kondisi sold/out of stock jika ada propertinya (misal stock == 0)
+            matchesFilter = product.stock == 0;
+          }
 
           return matchesSearch && matchesFilter;
         }).toList();
@@ -61,44 +69,63 @@ class _ProductsPageState extends State<ProductsPage> {
           child: SafeArea(
             child: Scaffold(
               backgroundColor: Colors.transparent,
-              floatingActionButton: FloatingActionButton.extended(
-                backgroundColor: AppTheme.primary,
-                foregroundColor: Colors.white,
-                onPressed: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProductFormPage(store: widget.store),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.add),
-                label: Text(
-                  'Add Product',
-                  style: TextStyle(fontFamily: textFamily),
-                ),
-              ),
               body: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Products',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textPrimary,
-                        fontFamily: textFamily,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Manage your inventory',
-                      style: TextStyle(
-                        color: AppTheme.textSecondary,
-                        fontFamily: textFamily,
-                      ),
+                    // Header dengan Judul di Kiri dan Tombol Tambah di Kanan Atas
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Products',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.textPrimary,
+                                fontFamily: textFamily,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Manage your inventory',
+                              style: TextStyle(
+                                color: AppTheme.textSecondary,
+                                fontFamily: textFamily,
+                              ),
+                            ),
+                          ],
+                        ),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primary,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          ),
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ProductFormPage(store: widget.store),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.add, size: 18),
+                          label: Text(
+                            'Add',
+                            style: TextStyle(fontFamily: textFamily, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
                     TextField(
@@ -111,7 +138,7 @@ class _ProductsPageState extends State<ProductsPage> {
                           color: AppTheme.textSecondary,
                           fontFamily: textFamily,
                         ),
-                        prefixIcon: Icon(
+                        prefixIcon: const Icon(
                           Icons.search,
                           color: AppTheme.primary,
                         ),
@@ -124,48 +151,20 @@ class _ProductsPageState extends State<ProductsPage> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    Row(
-                      children: [
-                        ChoiceChip(
-                          label: Text(
-                            'All',
-                            style: TextStyle(fontFamily: textFamily),
-                          ),
-                          selected: selectedFilter == 'All',
-                          selectedColor: AppTheme.primary.withValues(alpha: 0.12),
-                          checkmarkColor: AppTheme.primary,
-                          labelStyle: TextStyle(
-                            color: selectedFilter == 'All' ? AppTheme.primary : AppTheme.textSecondary,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: textFamily,
-                          ),
-                          onSelected: (_) {
-                            setState(() {
-                              selectedFilter = 'All';
-                            });
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        ChoiceChip(
-                          label: Text(
-                            'Low Stock',
-                            style: TextStyle(fontFamily: textFamily),
-                          ),
-                          selected: selectedFilter == 'Low Stock',
-                          selectedColor: AppTheme.primary.withValues(alpha: 0.12),
-                          checkmarkColor: AppTheme.primary,
-                          labelStyle: TextStyle(
-                            color: selectedFilter == 'Low Stock' ? AppTheme.primary : AppTheme.textSecondary,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: textFamily,
-                          ),
-                          onSelected: (_) {
-                            setState(() {
-                              selectedFilter = 'Low Stock';
-                            });
-                          },
-                        ),
-                      ],
+                    // Filter Chips (All, Low Stock, Safe Stock, Sold Stock)
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildChoiceChip('All', textFamily),
+                          const SizedBox(width: 8),
+                          _buildChoiceChip('Low Stock', textFamily),
+                          const SizedBox(width: 8),
+                          _buildChoiceChip('Safe Stock', textFamily),
+                          const SizedBox(width: 8),
+                          _buildChoiceChip('Sold Stock', textFamily),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 15),
                     Expanded(
@@ -208,6 +207,29 @@ class _ProductsPageState extends State<ProductsPage> {
             ),
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildChoiceChip(String label, String textFamily) {
+    final isSelected = selectedFilter == label;
+    return ChoiceChip(
+      label: Text(
+        label,
+        style: TextStyle(fontFamily: textFamily),
+      ),
+      selected: isSelected,
+      selectedColor: AppTheme.primary.withValues(alpha: 0.12),
+      checkmarkColor: AppTheme.primary,
+      labelStyle: TextStyle(
+        color: isSelected ? AppTheme.primary : AppTheme.textSecondary,
+        fontWeight: FontWeight.w600,
+        fontFamily: textFamily,
+      ),
+      onSelected: (_) {
+        setState(() {
+          selectedFilter = label;
+        });
       },
     );
   }

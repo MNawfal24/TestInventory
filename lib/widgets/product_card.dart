@@ -15,8 +15,28 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lowStock = product.isLowStock;
     final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
+
+    final bool isOutOfStock = product.stock == 0;
+    final bool isLowStock = !isOutOfStock && product.isLowStock;
+
+    Color statusColor;
+    String statusLabel;
+    IconData statusIcon;
+
+    if (isOutOfStock) {
+      statusColor = Colors.grey.shade700;
+      statusLabel = 'Out of Stock';
+      statusIcon = Icons.remove_shopping_cart_outlined;
+    } else if (isLowStock) {
+      statusColor = AppTheme.danger;
+      statusLabel = 'Low Stock';
+      statusIcon = Icons.warning_amber_outlined;
+    } else {
+      statusColor = AppTheme.secondary;
+      statusLabel = 'Available';
+      statusIcon = Icons.inventory_2_outlined;
+    }
 
     return InkWell(
       onTap: onTap,
@@ -40,12 +60,12 @@ class ProductCard extends StatelessWidget {
               width: 55,
               height: 55,
               decoration: BoxDecoration(
-                color: AppTheme.primary.withValues(alpha: 0.08),
+                color: statusColor.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(
-                Icons.inventory_2_outlined,
-                color: AppTheme.primary,
+              child: Icon(
+                statusIcon,
+                color: statusColor,
               ),
             ),
             const SizedBox(width: 14),
@@ -78,7 +98,7 @@ class ProductCard extends StatelessWidget {
                         '${product.stock} ${product.unit}',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: lowStock ? AppTheme.danger : AppTheme.primary,
+                          color: statusColor,
                           fontFamily: textFamily,
                         ),
                       ),
@@ -86,16 +106,15 @@ class ProductCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: (lowStock ? AppTheme.danger : AppTheme.secondary)
-                              .withValues(alpha: 0.10),
+                          color: statusColor.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          lowStock ? 'Low Stock' : 'Available',
+                          statusLabel,
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
-                            color: lowStock ? AppTheme.danger : AppTheme.primary,
+                            color: statusColor,
                             fontFamily: textFamily,
                           ),
                         ),
@@ -105,7 +124,7 @@ class ProductCard extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.textSecondary,
             ),
