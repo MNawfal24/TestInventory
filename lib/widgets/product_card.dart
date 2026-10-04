@@ -16,6 +16,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lowStock = product.isLowStock;
+    final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
 
     return InkWell(
       onTap: onTap,
@@ -25,6 +26,13 @@ class ProductCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.02),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -47,17 +55,20 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Text(
                     product.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
                       fontSize: 15,
+                      color: AppTheme.textPrimary,
+                      fontFamily: textFamily,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     product.category,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 12,
+                      fontFamily: textFamily,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -66,33 +77,26 @@ class ProductCard extends StatelessWidget {
                       Text(
                         '${product.stock} ${product.unit}',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: lowStock
-                              ? AppTheme.danger
-                              : AppTheme.secondary,
+                          fontWeight: FontWeight.w700,
+                          color: lowStock ? AppTheme.danger : AppTheme.primary,
+                          fontFamily: textFamily,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: (lowStock
-                                  ? AppTheme.danger
-                                  : AppTheme.secondary)
-                              .withValues(alpha: 0.1),
+                          color: (lowStock ? AppTheme.danger : AppTheme.secondary)
+                              .withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           lowStock ? 'Low Stock' : 'Available',
                           style: TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: lowStock
-                                ? AppTheme.danger
-                                : AppTheme.secondary,
+                            fontWeight: FontWeight.w700,
+                            color: lowStock ? AppTheme.danger : AppTheme.primary,
+                            fontFamily: textFamily,
                           ),
                         ),
                       ),
@@ -101,9 +105,9 @@ class ProductCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: Colors.grey,
+              color: AppTheme.textSecondary,
             ),
           ],
         ),

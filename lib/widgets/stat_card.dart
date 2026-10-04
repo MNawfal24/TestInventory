@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'app_theme.dart';
+
 class StatCard extends StatelessWidget {
   final String title;
   final String value;
@@ -18,80 +20,85 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
+    final primaryColor = color;
+
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Icon + menu
           Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(12),
+                  color: primaryColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
                   icon,
-                  color: color,
-                  size: 21,
+                  color: primaryColor,
+                  size: 22,
                 ),
               ),
               const Spacer(),
-              const Icon(
+              Icon(
                 Icons.more_horiz,
-                color: Colors.grey,
+                color: AppTheme.textSecondary,
                 size: 20,
               ),
             ],
           ),
-
-          const SizedBox(height: 10),
-
-          // Title
+          const SizedBox(height: 14),
           Text(
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Color(0xFF6B7280),
+            style: TextStyle(
+              color: AppTheme.textSecondary,
               fontSize: 12,
+              letterSpacing: 0.2,
+              fontFamily: textFamily,
             ),
           ),
-
-          const SizedBox(height: 3),
-
-          // Value
+          const SizedBox(height: 5),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
             child: Text(
               value,
               maxLines: 1,
-              style: const TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.textPrimary,
+                fontFamily: textFamily,
               ),
             ),
           ),
-
-          const SizedBox(height: 3),
-
-          // Subtitle
+          const SizedBox(height: 5),
           Text(
             subtitle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: color,
+              color: primaryColor,
               fontSize: 11,
               fontWeight: FontWeight.w600,
+              fontFamily: textFamily,
             ),
           ),
         ],

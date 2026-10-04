@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/mock_data.dart';
+import '../../widgets/app_theme.dart';
 
 class ProfilePage extends StatelessWidget {
   final InventoryStore store;
@@ -12,128 +13,140 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          20,
-          20,
-          20,
-          100,
+    final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
+
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFEAF2FF),
+            Color(0xFFF5F7FB),
+          ],
         ),
-        child: Column(
-          children: [
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Profile',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+      ),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Profile',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary,
+                    fontFamily: textFamily,
+                  ),
                 ),
               ),
-            ),
-
-            const SizedBox(height: 25),
-
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(25),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+              const SizedBox(height: 22),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.02),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 42,
+                      backgroundColor: AppTheme.primary.withValues(alpha: 0.12),
+                      child: Icon(
+                        Icons.store,
+                        size: 38,
+                        color: AppTheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      'Kopi Senja Cafe',
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                        fontFamily: textFamily,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Cafe & Coffee Shop',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontFamily: textFamily,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                children: [
-                  const CircleAvatar(
-                    radius: 42,
-                    child: Icon(
-                      Icons.store,
-                      size: 38,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    'Kopi Senja Cafe',
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    'Cafe & Coffee Shop',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 18),
+              _MenuItem(
+                icon: Icons.storefront_outlined,
+                title: 'Store Information',
+                subtitle: 'Manage your store profile',
+                onTap: () {
+                  _showInfoDialog(
+                    context,
+                    'Store Information',
+                    'Kopi Senja Cafe\nMalang, Indonesia',
+                  );
+                },
               ),
-            ),
-
-            const SizedBox(height: 18),
-
-            _MenuItem(
-              icon: Icons.storefront_outlined,
-              title: 'Store Information',
-              subtitle: 'Manage your store profile',
-              onTap: () {
-                _showInfoDialog(
-                  context,
-                  'Store Information',
-                  'Kopi Senja Cafe\nMalang, Indonesia',
-                );
-              },
-            ),
-
-            _MenuItem(
-              icon: Icons.notifications_none,
-              title: 'Notifications',
-              subtitle: 'Manage notification preferences',
-              onTap: () {
-                _showInfoDialog(
-                  context,
-                  'Notifications',
-                  'Low stock notifications are enabled.',
-                );
-              },
-            ),
-
-            _MenuItem(
-              icon: Icons.settings_outlined,
-              title: 'Settings',
-              subtitle: 'Application settings',
-              onTap: () {
-                _showInfoDialog(
-                  context,
-                  'Settings',
-                  'Settings page will be connected later.',
-                );
-              },
-            ),
-
-            _MenuItem(
-              icon: Icons.info_outline,
-              title: 'About Myventory',
-              subtitle: 'Smart Inventory for UMKM',
-              onTap: () {
-                _showInfoDialog(
-                  context,
-                  'About Myventory',
-                  'Smart Inventory prototype for UMKM and cafe businesses.',
-                );
-              },
-            ),
-          ],
+              _MenuItem(
+                icon: Icons.notifications_none,
+                title: 'Notifications',
+                subtitle: 'Manage notification preferences',
+                onTap: () {
+                  _showInfoDialog(
+                    context,
+                    'Notifications',
+                    'Low stock notifications are enabled.',
+                  );
+                },
+              ),
+              _MenuItem(
+                icon: Icons.settings_outlined,
+                title: 'Settings',
+                subtitle: 'Application settings',
+                onTap: () {
+                  _showInfoDialog(
+                    context,
+                    'Settings',
+                    'Settings page will be connected later.',
+                  );
+                },
+              ),
+              _MenuItem(
+                icon: Icons.info_outline,
+                title: 'About Myventory',
+                subtitle: 'Smart Inventory for UMKM',
+                onTap: () {
+                  _showInfoDialog(
+                    context,
+                    'About Myventory',
+                    'Smart Inventory prototype for UMKM and cafe businesses.',
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _showInfoDialog(
-    BuildContext context,
-    String title,
-    String message,
-  ) {
+  void _showInfoDialog(BuildContext context, String title, String message) {
     showDialog(
       context: context,
       builder: (_) {
@@ -169,36 +182,45 @@ class _MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
+    final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
+    final primary = AppTheme.primary;
+
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
       child: ListTile(
         onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         leading: Container(
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: Colors.blue.withValues(alpha: 0.08),
+            color: primary.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
             icon,
-            color: Colors.blue,
+            color: primary,
           ),
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textPrimary,
+            fontFamily: textFamily,
           ),
         ),
-        subtitle: Text(subtitle),
-        trailing: const Icon(
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            color: AppTheme.textSecondary,
+            fontFamily: textFamily,
+          ),
+        ),
+        trailing: Icon(
           Icons.chevron_right,
-          color: Colors.grey,
+          color: AppTheme.textSecondary,
         ),
       ),
     );

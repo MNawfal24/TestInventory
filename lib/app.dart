@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'data/mock_data.dart';
 import 'pages/dashboard/dashboard_page.dart';
 import 'pages/products/products_page.dart';
-import 'pages/transactions/transactions_page.dart';
 import 'pages/predictions/prediction_page.dart';
 import 'pages/profile/profile_page.dart';
 import 'widgets/app_theme.dart';
@@ -47,7 +46,6 @@ class _AppShellState extends State<AppShell> {
         },
       ),
       ProductsPage(store: store),
-      TransactionsPage(store: store),
       PredictionPage(store: store),
       ProfilePage(store: store),
     ];
