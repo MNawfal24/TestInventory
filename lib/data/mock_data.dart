@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 import '../models/product_model.dart';
-import '../models/transaction_model.dart';
 
 class InventoryStore extends ChangeNotifier {
   final List<Product> products = [
@@ -57,60 +56,8 @@ class InventoryStore extends ChangeNotifier {
     ),
   ];
 
-  final List<InventoryTransaction> transactions = [
-    InventoryTransaction(
-      id: 'T001',
-      productId: 'P001',
-      productName: 'Kopi Arabica',
-      quantity: 3,
-      total: 375000,
-      date: DateTime(2026, 9, 30),
-      type: 'Sale',
-    ),
-    InventoryTransaction(
-      id: 'T002',
-      productId: 'P002',
-      productName: 'Susu Full Cream',
-      quantity: 2,
-      total: 50000,
-      date: DateTime(2026, 9, 30),
-      type: 'Sale',
-    ),
-    InventoryTransaction(
-      id: 'T003',
-      productId: 'P003',
-      productName: 'Gula Aren',
-      quantity: 1,
-      total: 65000,
-      date: DateTime(2026, 9, 29),
-      type: 'Sale',
-    ),
-    InventoryTransaction(
-      id: 'T004',
-      productId: 'P001',
-      productName: 'Kopi Arabica',
-      quantity: 2,
-      total: 250000,
-      date: DateTime(2026, 9, 29),
-      type: 'Sale',
-    ),
-  ];
-
   List<Product> get lowStockProducts {
     return products.where((product) => product.isLowStock).toList();
-  }
-
-  double get todaySales {
-    final today = DateTime.now();
-
-    return transactions
-        .where(
-          (transaction) =>
-              transaction.date.year == today.year &&
-              transaction.date.month == today.month &&
-              transaction.date.day == today.day,
-        )
-        .fold(0, (sum, transaction) => sum + transaction.total);
   }
 
   int get totalProducts => products.length;
@@ -139,33 +86,6 @@ class InventoryStore extends ChangeNotifier {
       products[index] = updatedProduct;
       notifyListeners();
     }
-  }
-
-  void addTransaction({
-    required Product product,
-    required int quantity,
-    required DateTime date,
-  }) {
-    if (quantity <= 0 || quantity > product.stock) {
-      return;
-    }
-
-    product.stock -= quantity;
-
-    transactions.insert(
-      0,
-      InventoryTransaction(
-        id: 'T${DateTime.now().millisecondsSinceEpoch}',
-        productId: product.id,
-        productName: product.name,
-        quantity: quantity,
-        total: product.sellPrice * quantity,
-        date: date,
-        type: 'Sale',
-      ),
-    );
-
-    notifyListeners();
   }
 
   int predictedDemand(Product product) {

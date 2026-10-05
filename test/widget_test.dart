@@ -7,9 +7,9 @@ void main() {
     await tester.pumpWidget(const MyventoryApp());
 
     expect(find.text('Dashboard'), findsOneWidget);
-    expect(find.text('Products'), findsOneWidget);
-    expect(find.text('Transactions'), findsOneWidget);
+    expect(find.text('Products'), findsWidgets);
     expect(find.text('Prediction'), findsOneWidget);
     expect(find.text('Profile'), findsOneWidget);
+    expect(find.text('Transactions'), findsNothing);
   });
 }

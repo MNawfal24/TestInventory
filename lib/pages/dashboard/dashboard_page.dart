@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../data/mock_data.dart';
 import '../../widgets/app_theme.dart';
 import '../../widgets/stat_card.dart';
-import '../../widgets/transaction_card.dart';
 
 class DashboardPage extends StatelessWidget {
   final InventoryStore store;
@@ -21,7 +20,8 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
+    final textFamily =
+        Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
 
     return AnimatedBuilder(
       animation: store,
@@ -31,10 +31,7 @@ class DashboardPage extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFEAF2FF),
-                Color(0xFFF5F7FB),
-              ],
+              colors: [Color(0xFFEAF2FF), Color(0xFFF5F7FB)],
             ),
           ),
           child: SafeArea(
@@ -99,13 +96,13 @@ class DashboardPage extends StatelessWidget {
                     const SizedBox(height: 18),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 16,
+                      ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            AppTheme.primary,
-                            const Color(0xFF3D69D3),
-                          ],
+                          colors: [AppTheme.primary, const Color(0xFF3D69D3)],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
@@ -147,7 +144,7 @@ class DashboardPage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  currency(store.todaySales),
+                                  'Rp 0',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
@@ -159,7 +156,10 @@ class DashboardPage extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.18),
                               borderRadius: BorderRadius.circular(12),
@@ -208,7 +208,7 @@ class DashboardPage extends StatelessWidget {
                         ),
                         StatCard(
                           title: 'Sales',
-                          value: currency(store.todaySales),
+                          value: 'Rp 0',
                           subtitle: 'Today',
                           icon: Icons.payments_outlined,
                           color: AppTheme.primary,
@@ -259,86 +259,75 @@ class DashboardPage extends StatelessWidget {
                         ),
                       )
                     else
-                      ...store.lowStockProducts.take(3).map(
-                        (product) {
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.02),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                      ...store.lowStockProducts.take(3).map((product) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 13,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.02),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: AppTheme.primary.withValues(
+                                  alpha: 0.08,
                                 ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: AppTheme.primary.withValues(alpha: 0.08),
-                                  child: Icon(
-                                    Icons.warning_amber_rounded,
-                                    color: AppTheme.warning,
-                                    size: 21,
-                                  ),
+                                child: Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: AppTheme.warning,
+                                  size: 21,
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.textPrimary,
-                                          fontFamily: textFamily,
-                                        ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppTheme.textPrimary,
+                                        fontFamily: textFamily,
                                       ),
-                                      const SizedBox(height: 3),
-                                      Text(
-                                        'Stock ${product.stock} ${product.unit} • Min ${product.minStock}',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: AppTheme.textSecondary,
-                                          fontFamily: textFamily,
-                                        ),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      'Stock ${product.stock} ${product.unit} • Min ${product.minStock}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: AppTheme.textSecondary,
+                                        fontFamily: textFamily,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 8),
-                                Icon(
-                                  Icons.chevron_right,
-                                  color: AppTheme.textSecondary,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Recent Transactions',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary,
-                        fontFamily: textFamily,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ...store.transactions.take(3).map(
-                      (transaction) => TransactionCard(transaction: transaction),
-                    ),
+                              ),
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.chevron_right,
+                                color: AppTheme.textSecondary,
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                   ],
                 ),
               ),
