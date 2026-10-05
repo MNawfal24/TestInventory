@@ -20,11 +20,12 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
+    final textFamily =
+        Theme.of(context).textTheme.bodyMedium?.fontFamily ?? 'Poppins';
     final primaryColor = color;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -48,18 +49,10 @@ class StatCard extends StatelessWidget {
                   color: primaryColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(
-                  icon,
-                  color: primaryColor,
-                  size: 22,
-                ),
+                child: Icon(icon, color: primaryColor, size: 22),
               ),
               const Spacer(),
-              Icon(
-                Icons.more_horiz,
-                color: AppTheme.textSecondary,
-                size: 20,
-              ),
+              Icon(Icons.more_horiz, color: AppTheme.textSecondary, size: 20),
             ],
           ),
           const SizedBox(height: 14),
